@@ -8,10 +8,6 @@ public abstract class AbstractServiceException extends RuntimeException {
         super(message);
     }
 
-    AbstractServiceException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
     abstract Response.Status getStatus();
 
 }
