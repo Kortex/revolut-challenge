@@ -1,35 +1,30 @@
 package com.ariskourt.revolut;
 
-import com.ariskourt.revolut.api.BankAccountResource;
-import com.ariskourt.revolut.domain.BankAccount;
-import lombok.extern.slf4j.Slf4j;
+import com.ariskourt.revolut.api.resources.AccountTransferRequest;
+import com.ariskourt.revolut.services.AccountTransferService;
+import lombok.RequiredArgsConstructor;
 
-import javax.transaction.Transactional;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("/accounts")
-@Slf4j
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+@RequiredArgsConstructor
 public class BackAccountResource {
 
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String hello() {
-        return "hello";
-    }
+    private final AccountTransferService transferService;
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
-    @Path("/create")
-    @Transactional
-    public String create(BankAccountResource resource) {
-        log.info("About to persist the following account:: {}", resource);
-        BankAccount account = new BankAccount();
-        account.setAccountBalance(resource.getBalance());
-        account.setAccountHolder(resource.getHolder());
-        account.persist();
-        return BankAccount.listAll().get(0).toString();
+    @Path("/transfer")
+    public Response create(AccountTransferRequest resource) {
+        return Response.status(Response.Status.OK)
+            .entity(transferService.transferAmount(resource))
+            .build();
     }
 
 }

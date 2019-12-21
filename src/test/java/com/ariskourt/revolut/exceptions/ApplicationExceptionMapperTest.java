@@ -1,18 +1,21 @@
 package com.ariskourt.revolut.exceptions;
 
-import com.ariskourt.revolut.api.ErrorResource;
-import io.quarkus.test.junit.QuarkusTest;
+import com.ariskourt.revolut.api.resources.ErrorResponse;
+import com.ariskourt.revolut.exceptions.common.ApplicationExceptionMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.core.Response;
 
+import java.text.MessageFormat;
+
+import static com.ariskourt.revolut.exceptions.common.ApplicationError.ACCOUNT_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.*;
 
-@QuarkusTest
 class ApplicationExceptionMapperTest {
 
-    private static final String EXCEPTION_MESSAGE = "Some exception message";
+    private static final int ACCOUNT_ID = 1;
+    private static final String MESSAGE = "No account found for id {1}";
 
     private ApplicationExceptionMapper mapper;
 
@@ -23,25 +26,17 @@ class ApplicationExceptionMapperTest {
 
     @Test
     public void ToResponse_WhenExceptionIsPassed_ResponseIsCreatedAndSerialized() {
-	SomeException exception = new SomeException(EXCEPTION_MESSAGE);
+        BankAccountNotFoundException exception = new BankAccountNotFoundException(MESSAGE, Integer.toString(ACCOUNT_ID));
 	Response response = mapper.toResponse(exception);
 	assertNotNull(response);
-	ErrorResource resource = (ErrorResource) response.getEntity();
+	ErrorResponse resource = (ErrorResponse) response.getEntity();
 	assertAll(() -> {
 	    assertNotNull(resource.getMessage());
-	    assertNotNull(resource.getCode());
-	    assertEquals(EXCEPTION_MESSAGE, resource.getMessage());
-	    assertEquals(Response.Status.NOT_FOUND.getStatusCode(), (int) resource.getCode());
+	    assertNotNull(resource.getErrorCode());
+	    assertEquals(MessageFormat.format(MESSAGE, ACCOUNT_ID), resource.getMessage());
+	    assertEquals(ACCOUNT_NOT_FOUND.getErrorCode(), resource.getErrorCode());
+	    assertEquals(exception.getStatus(), response.getStatusInfo());
 	});
-    }
-
-    private static class SomeException extends AbstractServiceException {
-        SomeException(String message) {
-            super(message);
-	}
-
-	@Override
-	Response.Status getStatus() { return Response.Status.NOT_FOUND; }
     }
 
 }

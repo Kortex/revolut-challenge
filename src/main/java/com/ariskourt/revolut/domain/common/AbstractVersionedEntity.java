@@ -1,4 +1,4 @@
-package com.ariskourt.revolut.domain;
+package com.ariskourt.revolut.domain.common;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Getter;

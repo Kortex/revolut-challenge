@@ -1,5 +1,6 @@
 package com.ariskourt.revolut.domain;
 
+import com.ariskourt.revolut.domain.common.AbstractVersionedEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,13 +28,13 @@ public class BankAccount extends AbstractVersionedEntity {
         strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Column(name = "id", nullable = false)
-    private UUID id;
+    private String id;
 
     @Column(name = "account_holder")
     private String accountHolder;
 
     @Column(name = "account_balance")
-    private Integer accountBalance;
+    private Long accountBalance;
 
 }
 
