@@ -9,7 +9,8 @@ public enum ApplicationError {
 
     ACCOUNT_NOT_FOUND (1),
     SAME_ACCOUNT_TRANSFER (2),
-    INSUFFICIENT_ACCOUNT_BALANCE (3);
+    INSUFFICIENT_ACCOUNT_BALANCE (3),
+    DATA_ACCESS_ERROR(-1);
 
     private final Integer errorCode;
 

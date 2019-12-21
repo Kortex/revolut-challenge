@@ -2,56 +2,59 @@ package com.ariskourt.revolut.services;
 
 import com.ariskourt.revolut.api.resources.AccountTransferRequest;
 import com.ariskourt.revolut.api.resources.AccountTransferResponse;
-import com.ariskourt.revolut.exceptions.InsufficientBalanceException;
-import com.ariskourt.revolut.exceptions.SameAccountTransferException;
-import com.ariskourt.revolut.repositories.BankAccountRepository;
+import com.ariskourt.revolut.domain.BankAccount;
+import com.ariskourt.revolut.exceptions.DataAccessException;
+import com.ariskourt.revolut.utils.Pair;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 
-import java.util.UUID;
+import java.sql.SQLException;
 
 @Slf4j
 @ApplicationScoped
 @RequiredArgsConstructor
 public class AccountTransferService {
 
-    private final BankAccountRepository repository;
-    private final AccountPresenceValidationService validationService;
+    private static final String UPDATE_BALANCE_QUERY = "UPDATE bank_account "
+        + "SET account_balance = ?, "
+        + "updated_at = NOW(), "
+        + "version = ((SELECT version FROM bank_account WHERE id = ?) + 1) "
+        + "WHERE id = ?";
 
-    @Transactional
+    private final QueryRunnerService databaseService;
+    private final AccountValidationService validationService;
+
+    @Transactional(rollbackOn = DataAccessException.class)
     public AccountTransferResponse transferAmount(AccountTransferRequest request) {
         log.info("Got incoming request with details {} validating", request);
-        validationService.validateRequest(request);
 
-        var fromAccount = repository.findById(request.getFromAccount());
-        var toAccount = repository.findById(request.getToAccount());
+        try {
+            Pair<BankAccount, BankAccount> accountPair = validationService.validateAndGetAccounts(request);
 
-        if (fromAccount.equals(toAccount)) {
-            log.error("Transferring from and to the same account is not applicable");
-            throw new SameAccountTransferException("FromAccount and ToAccount are the same. Cannot perform transfer");
+            log.info("Transferring {} credits from account {} to account {}",
+                request.getAmount(),
+                accountPair.getLeft().getId(),
+                accountPair.getRight().getId());
+
+            var newFromBalance = accountPair.getLeft().getAccountBalance() - request.getAmount();
+            var newToBalance  = accountPair.getRight().getAccountBalance() - request.getAmount();
+            runUpdate(newFromBalance, accountPair.getLeft().getId());
+            runUpdate(newToBalance, accountPair.getRight().getId());
+            return new AccountTransferResponse(request.getAmount(), "Account funds transfer has been successful");
+        } catch (SQLException e) {
+            log.error("An error has occurred while performing a database operation", e);
+            throw new DataAccessException(e);
         }
 
-        if (fromAccount.getAccountBalance() < 0L || (fromAccount.getAccountBalance() < request.getAmount())) {
-            log.error("FromAccount has an insufficient balance");
-            throw new InsufficientBalanceException("FromAccount with id {1} has an insufficient account balance {2}",
-                fromAccount.getId(),
-                fromAccount.getAccountBalance());
-        }
+    }
 
-        log.info("Transferring {} credits from account {} to account {}", request.getAmount(),
-            fromAccount.getId(), toAccount.getId());
-
-        fromAccount.setAccountBalance(fromAccount.getAccountBalance() - request.getAmount());
-        toAccount.setAccountBalance(toAccount.getAccountBalance() + request.getAmount());
-
-        fromAccount.persistAndFlush();
-        toAccount.persistAndFlush();
-
-        return new AccountTransferResponse(request.getAmount(), "Account funds transfer has been successful");
-
+    private void runUpdate(Long balance, String accountId) throws SQLException {
+        databaseService
+            .get()
+            .update(UPDATE_BALANCE_QUERY, balance, accountId, accountId);
     }
 
 }
