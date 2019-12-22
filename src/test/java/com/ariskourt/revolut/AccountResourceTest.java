@@ -5,12 +5,14 @@ import com.ariskourt.revolut.api.AccountTransferResponse;
 import com.ariskourt.revolut.api.ErrorResponse;
 import com.ariskourt.revolut.domain.BankAccount;
 import com.ariskourt.revolut.exceptions.common.ApplicationError;
+import com.ariskourt.revolut.services.QueryRunnerService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.test.junit.QuarkusTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 
+import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
 import java.util.ArrayList;
@@ -31,6 +33,9 @@ public class AccountResourceTest {
     private static final String TO_ID = "7c74d1d9-99f7-48b5-85b6-1397902dde17";
 
     private ObjectMapper mapper;
+
+    @Inject
+    QueryRunnerService queryRunnerService;
 
     @BeforeEach
     void setUp() {
@@ -166,12 +171,11 @@ public class AccountResourceTest {
 
     @Test
     @Order(7)
-    @Disabled
     public void transfer_WhenFromAccountBalanceHasNoFunds_400isReturnedAlongWithErrorResponse() throws Exception {
-        log.info("Zeroing fromAccount's balance....");
-       /* runnerService
-            .get()
-            .update("UPDATE bank_account SET account_balance = ? WHERE id = ?", 0, FROM_ID);*/
+        log.info("Zeroing out account balance for account {}", FROM_ID);
+        queryRunnerService
+            .getRunner()
+            .update("UPDATE bank_account SET account_balance = ? WHERE id = ?", 0, FROM_ID);
 
         var request = createRequest(FROM_ID, TO_ID, 1000L);
         var response = given()
@@ -189,6 +193,11 @@ public class AccountResourceTest {
         assertNotNull(response.getMessage());
         assertNull(response.getStacktrace());
         assertEquals(ApplicationError.INSUFFICIENT_ACCOUNT_BALANCE.getCode(), response.getErrorCode());
+
+        log.info("Re-instating account balance for account {}", FROM_ID);
+        queryRunnerService
+            .getRunner()
+            .update("UPDATE bank_account SET account_balance = ? WHERE id = ?", 10000, FROM_ID);
     }
 
     @Test

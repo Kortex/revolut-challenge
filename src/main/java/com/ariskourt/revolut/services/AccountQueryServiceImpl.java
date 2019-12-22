@@ -48,7 +48,7 @@ public class AccountQueryServiceImpl implements AccountQueryService {
 	log.info("Querying database for account with the following id {}", id);
 	try {
 	    return queryRunnerService
-		.get()
+		.getRunner()
 		.query(QUERY_SINGLE, new BeanHandler<>(BankAccount.class), id);
 	} catch (SQLException e) {
 	    log.error("Attempting to query for bank account with id {} has failed", id, e);
@@ -62,7 +62,6 @@ public class AccountQueryServiceImpl implements AccountQueryService {
      * Returns a list of concrete {@link BankAccount} objects or an empty list if none are found.
      * Can throw a {@link DataAccessException} in case a database related operation fails
      *
-     * @param id - The string id used to query the database
      * @return - A the fully constructed account object
      */
     @Override
@@ -70,7 +69,7 @@ public class AccountQueryServiceImpl implements AccountQueryService {
 	log.info("Querying database for accounts to list all accounts");
 	try {
 	    return queryRunnerService
-		.get()
+		.getRunner()
 		.query(QUERY_MULTI, new BeanListHandler<>(BankAccount.class));
 	} catch (SQLException e) {
 	    log.error("Listing bank accounts has failed", e);

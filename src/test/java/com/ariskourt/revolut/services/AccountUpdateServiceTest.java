@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.SQLException;
@@ -42,7 +41,7 @@ class AccountUpdateServiceTest {
     @Test
     @DisplayName("When correct object update occurs nothing is returned")
     public void updateAccount_WhenUpdateHappensWithNoIssues_NothingIsReturned() throws SQLException {
-        when(queryRunnerService.get()).thenReturn(queryRunner);
+        when(queryRunnerService.getRunner()).thenReturn(queryRunner);
         when(queryRunner.update(anyString(), eq(BALANCE), eq(ID), eq(ID))).thenReturn(1);
         updateService.updateAccount(account);
         verify(queryRunner).update(anyString(), eq(BALANCE), eq(ID), eq(ID));
@@ -51,7 +50,7 @@ class AccountUpdateServiceTest {
     @Test
     @DisplayName("When a SQLException occurs, exception is handled and rethrown")
     public void updateAccount_WhenSqlExceptionIsThrown_ExceptionIsHandledAndRethrown() throws SQLException {
-        when(queryRunnerService.get()).thenReturn(queryRunner);
+        when(queryRunnerService.getRunner()).thenReturn(queryRunner);
         when(queryRunner.update(anyString(), eq(BALANCE), eq(ID), eq(ID))).thenThrow(new SQLException("Invalid SQL statement"));
         assertThrows(DataAccessException.class, () -> updateService.updateAccount(account));
         verify(queryRunner).update(anyString(), eq(BALANCE), eq(ID), eq(ID));

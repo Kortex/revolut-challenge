@@ -7,13 +7,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
-class QueryRunnerServiceTest {
+class QueryRunnerServiceImplTest {
 
     @Mock private AgroalDataSource dataSource;
 
@@ -21,15 +20,14 @@ class QueryRunnerServiceTest {
 
     @BeforeEach
     void setUp() {
-        queryRunnerService = new QueryRunnerService(dataSource);
+        queryRunnerService = new QueryRunnerServiceImpl(dataSource);
     }
 
     @Test
     @DisplayName("When get method is called a queryRunner object is returned")
     public void get_WhenCalled_QueryRunnerIsReturned() {
-        QueryRunner runner = queryRunnerService.get();
+        QueryRunner runner = queryRunnerService.getRunner();
         assertNotNull(runner);
     }
-
 
 }

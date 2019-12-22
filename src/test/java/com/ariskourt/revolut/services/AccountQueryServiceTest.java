@@ -42,7 +42,7 @@ class AccountQueryServiceTest {
     @Test
     @DisplayName("When id is matched at the database, account is returned")
     public void getAccountBy_WhenIdIsMatched_AccountObjectIsReturned() throws SQLException {
-        when(queryRunnerService.get()).thenReturn(queryRunner);
+        when(queryRunnerService.getRunner()).thenReturn(queryRunner);
         when(queryRunner.query(anyString(), any(BeanHandler.class), eq(ID_1))).thenReturn(account);
         BankAccount retrieved = queryService.getAccountBy(ID_1);
         verify(queryRunner).query(anyString(), any(BeanHandler.class), eq(ID_1));
@@ -57,7 +57,7 @@ class AccountQueryServiceTest {
     @Test
     @DisplayName("When id is not matched at the database, null is returned")
     public void getAccountBy_WhenIdIsNotMatched_NullIsReturned() throws SQLException {
-        when(queryRunnerService.get()).thenReturn(queryRunner);
+        when(queryRunnerService.getRunner()).thenReturn(queryRunner);
         when(queryRunner.query(anyString(), any(BeanHandler.class), eq(ID_1))).thenReturn(null);
         BankAccount retrieved = queryService.getAccountBy(ID_1);
         verify(queryRunner).query(anyString(), any(BeanHandler.class), eq(ID_1));
@@ -67,7 +67,7 @@ class AccountQueryServiceTest {
     @Test
     @DisplayName("When records are present, an account list is returned")
     public void getAccounts_WhenRecordsArePresent_AccountListGetsReturned() throws SQLException {
-        when(queryRunnerService.get()).thenReturn(queryRunner);
+        when(queryRunnerService.getRunner()).thenReturn(queryRunner);
         when(queryRunner.query(anyString(), any(BeanListHandler.class))).thenReturn(accountList);
         List<BankAccount> accounts = queryService.getAccounts();
         verify(queryRunner).query(anyString(), any(BeanListHandler.class));
@@ -78,7 +78,7 @@ class AccountQueryServiceTest {
     @Test
     @DisplayName("When records are not present, an empty account list is returned")
     public void getAccounts_WhenRecordsNotPresent_EmptyListGetsReturned() throws SQLException {
-        when(queryRunnerService.get()).thenReturn(queryRunner);
+        when(queryRunnerService.getRunner()).thenReturn(queryRunner);
         when(queryRunner.query(anyString(), any(BeanListHandler.class))).thenReturn(Collections.emptyList());
         List<BankAccount> accounts = queryService.getAccounts();
         verify(queryRunner).query(anyString(), any(BeanListHandler.class));
@@ -89,7 +89,7 @@ class AccountQueryServiceTest {
     @Test
     @DisplayName("When an SQLExceptions is thrown attempting to list multiple values, it gets handled correctly")
     public void getAccounts_WhenSqlExceptionOccurs_ExceptionsIsHandledAndRethrown() throws SQLException {
-        when(queryRunnerService.get()).thenReturn(queryRunner);
+        when(queryRunnerService.getRunner()).thenReturn(queryRunner);
         when(queryRunner.query(anyString(), any(BeanListHandler.class))).thenThrow(new SQLException("Invalid SQL statement"));
         assertThrows(DataAccessException.class, () -> queryService.getAccounts());
         verify(queryRunner).query(anyString(), any(BeanListHandler.class));
@@ -98,7 +98,7 @@ class AccountQueryServiceTest {
     @Test
     @DisplayName("When SQLException is thrown, exception is handled and rethrown")
     public void getBankAccount_WhenSqlExceptionIsThrown_ExceptionIsCaughtAndRethrown() throws SQLException {
-        when(queryRunnerService.get()).thenReturn(queryRunner);
+        when(queryRunnerService.getRunner()).thenReturn(queryRunner);
         when(queryRunner.query(anyString(), any(BeanHandler.class), anyString())).thenThrow(new SQLException("Invalid SQL statement"));
         assertThrows(DataAccessException.class, () -> queryService.getAccountBy(ID_1));
         verify(queryRunner).query(anyString(), any(BeanHandler.class), eq(ID_1));

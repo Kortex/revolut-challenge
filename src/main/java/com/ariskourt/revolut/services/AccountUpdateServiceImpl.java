@@ -34,7 +34,7 @@ public class AccountUpdateServiceImpl implements AccountUpdateService {
 	log.info("Attempting to update the following account object {}", account);
 	try {
 	    var affected = queryRunnerService
-		.get()
+		.getRunner()
 		.update(UPDATE_QUERY,
 		    account.getAccountBalance(),
 		    account.getId(),
