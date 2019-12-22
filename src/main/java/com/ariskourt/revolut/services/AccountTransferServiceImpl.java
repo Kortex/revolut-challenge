@@ -35,8 +35,8 @@ public class AccountTransferServiceImpl implements AccountTransferService {
         try {
             log.info("Got incoming transfer request with the following details {}", request);
 
-            var fromAccount = queryService.getBankAccount(request.getFromAccount());
-            var toAccount = queryService.getBankAccount(request.getToAccount());
+            var fromAccount = queryService.getAccountBy(request.getFromAccount());
+            var toAccount = queryService.getAccountBy(request.getToAccount());
             var transferAmount = request.getAmount();
 
             log.info("Validating fetched accounts and transfer details...");

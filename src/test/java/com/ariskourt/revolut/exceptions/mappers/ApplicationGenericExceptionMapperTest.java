@@ -1,4 +1,4 @@
-package com.ariskourt.revolut.exceptions.common;
+package com.ariskourt.revolut.exceptions.mappers;
 
 import com.ariskourt.revolut.api.ErrorResponse;
 import com.ariskourt.revolut.exceptions.mappers.ApplicationGenericExceptionMapper;

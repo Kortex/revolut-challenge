@@ -7,8 +7,8 @@ import javax.ws.rs.core.Response;
 
 public class InsufficientBalanceException extends AbstractApplicationException {
 
-    public InsufficientBalanceException(String message, Object... args) {
-        super(message, ApplicationError.INSUFFICIENT_ACCOUNT_BALANCE, args);
+    public InsufficientBalanceException(String message) {
+        super(message, ApplicationError.INSUFFICIENT_ACCOUNT_BALANCE);
     }
 
     @Override

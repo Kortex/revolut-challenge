@@ -19,22 +19,20 @@ public class ApplicationGenericExceptionMapper implements ExceptionMapper<Throwa
 
     @Override
     public Response toResponse(Throwable throwable) {
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+	return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
 	    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
 	    .entity(getResponse(throwable))
 	    .build();
     }
 
     private ErrorResponse getResponse(Throwable throwable) {
-        var response = new ErrorResponse(ApplicationError.
+	return new ErrorResponse(ApplicationError.
 	    INTERNAL_SERVER_ERROR.getCode(),
-	    getThrowableMessageOrDefault(throwable));
-        response.setStacktrace(ExceptionUtils.getStackTrace(throwable));
-        return response;
+	    getThrowableMessageOrDefault(throwable), ExceptionUtils.getStackTrace(throwable));
     }
 
     private String getThrowableMessageOrDefault(Throwable throwable) {
-        return Optional.ofNullable(throwable.getMessage())
+	return Optional.ofNullable(throwable.getMessage())
 	    .orElse(UNKNOWN_ERROR_MESSAGE);
     }
 

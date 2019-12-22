@@ -1,16 +1,15 @@
 package com.ariskourt.revolut.api;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class ErrorResponse {
 
-    private final Integer errorCode;
-    private final String message;
+    private Integer errorCode;
+    private String message;
     private String stacktrace;
 
 }

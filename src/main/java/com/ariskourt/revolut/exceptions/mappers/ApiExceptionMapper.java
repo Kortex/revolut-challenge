@@ -16,7 +16,7 @@ public class ApiExceptionMapper implements ExceptionMapper<AbstractApplicationEx
     public Response toResponse(AbstractApplicationException e) {
 	return Response.status(e.getStatus())
 	    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-	    .entity(new ErrorResponse(e.getErrorCode(), e.getMessage()))
+	    .entity(new ErrorResponse(e.getErrorCode(), e.getMessage(), null))
 	    .build();
     }
 

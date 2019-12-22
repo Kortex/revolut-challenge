@@ -7,8 +7,8 @@ import javax.ws.rs.core.Response;
 
 public class SameAccountTransferException extends AbstractApplicationException {
 
-    public SameAccountTransferException(String message, String... args) {
-        super(message, ApplicationError.SAME_ACCOUNT_TRANSFER, args);
+    public SameAccountTransferException(String message) {
+        super(message, ApplicationError.SAME_ACCOUNT_TRANSFER);
     }
 
     @Override

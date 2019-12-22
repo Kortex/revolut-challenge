@@ -2,8 +2,11 @@ package com.ariskourt.revolut.services;
 
 import com.ariskourt.revolut.domain.BankAccount;
 
+import java.util.List;
+
 public interface AccountQueryService {
 
-    BankAccount getBankAccount(String id);
+    BankAccount getAccountBy(String id);
+    List<BankAccount> getAccounts();
 
 }

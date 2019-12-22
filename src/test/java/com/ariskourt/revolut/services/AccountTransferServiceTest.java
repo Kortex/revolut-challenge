@@ -44,8 +44,8 @@ class AccountTransferServiceTest {
 
     @Test
     public void transferAmount_WhenCalled_ResponseIsReturned() {
-        when(queryService.getBankAccount(eq(FROM_ID))).thenReturn(from);
-        when(queryService.getBankAccount(eq(TO_ID))).thenReturn(to);
+        when(queryService.getAccountBy(eq(FROM_ID))).thenReturn(from);
+        when(queryService.getAccountBy(eq(TO_ID))).thenReturn(to);
         doNothing().when(validationService).validateTransferDetails(any(Pair.class), anyLong());
         doNothing().when(updateService).updateAccount(any(BankAccount.class));
         AccountTransferResponse response = transferService.transferAmount(request);

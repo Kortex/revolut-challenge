@@ -8,6 +8,9 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
 
+/***
+ * Handy little utility for timing various operations
+ */
 @NoArgsConstructor
 @Getter(AccessLevel.PACKAGE)
 public class OperationTimer {
