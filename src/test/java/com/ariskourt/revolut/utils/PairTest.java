@@ -18,14 +18,12 @@ class PairTest {
     }
 
     @Test
-    public void verifyCorrectPairCreation() {
-        assertAll(() -> {
-            assertNotNull(pair);
-            assertNotNull(pair.getLeft());
-            assertEquals(LEFT, pair.getLeft());
-            assertNotNull(pair.getRight());
-            assertEquals(RIGHT, pair.getRight());
-        });
+    public void of_WhenStaticCreatorIsCalled_PairObjectGetsCreated() {
+        assertNotNull(pair);
+        assertNotNull(pair.getLeft());
+        assertEquals(LEFT, pair.getLeft());
+        assertNotNull(pair.getRight());
+        assertEquals(RIGHT, pair.getRight());
     }
 
 }

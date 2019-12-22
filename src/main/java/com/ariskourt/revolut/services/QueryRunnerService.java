@@ -16,6 +16,12 @@ public class QueryRunnerService implements Supplier<QueryRunner> {
 
     private final AgroalDataSource dataSource;
 
+    /***
+     * Method implemented from the {@link Supplier} interface. Returns a {@link QueryRunner} using the injected
+     * datasource.
+     *
+     * @return - A configured QueryRunner object for the given datasource
+     */
     @Override
     public QueryRunner get() {
 	return new QueryRunner(dataSource);

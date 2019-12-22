@@ -1,6 +1,6 @@
 package com.ariskourt.revolut;
 
-import com.ariskourt.revolut.api.resources.AccountTransferRequest;
+import com.ariskourt.revolut.api.AccountTransferRequest;
 import com.ariskourt.revolut.services.AccountTransferService;
 import lombok.RequiredArgsConstructor;
 
@@ -21,7 +21,7 @@ public class BackAccountResource {
 
     @POST
     @Path("/transfer")
-    public Response create(AccountTransferRequest resource) {
+    public Response transfer(AccountTransferRequest resource) {
         return Response.status(Response.Status.OK)
             .entity(transferService.transferAmount(resource))
             .build();

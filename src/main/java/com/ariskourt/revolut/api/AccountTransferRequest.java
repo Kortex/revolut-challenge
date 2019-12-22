@@ -1,4 +1,4 @@
-package com.ariskourt.revolut.api.resources;
+package com.ariskourt.revolut.api;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

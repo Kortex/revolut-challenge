@@ -7,8 +7,8 @@ import javax.ws.rs.core.Response;
 
 public class BankAccountNotFoundException extends AbstractApplicationException {
 
-    public BankAccountNotFoundException(String message, String... args) {
-	super(message, ApplicationError.ACCOUNT_NOT_FOUND, args);
+    public BankAccountNotFoundException(String message) {
+	super(message, ApplicationError.ACCOUNT_NOT_FOUND);
     }
 
     @Override

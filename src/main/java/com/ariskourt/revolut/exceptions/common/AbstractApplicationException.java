@@ -11,9 +11,14 @@ public abstract class AbstractApplicationException extends RuntimeException {
     @Getter
     private final Integer errorCode;
 
+    public AbstractApplicationException(String message, ApplicationError error) {
+        super(message);
+        this.errorCode = error.getCode();
+    }
+
     public AbstractApplicationException(String message, ApplicationError error, Object... args) {
         super(MessageFormat.format(message, args));
-        this.errorCode = error.getErrorCode();
+        this.errorCode = error.getCode();
     }
 
     public abstract Response.Status getStatus();
