@@ -10,11 +10,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.test.junit.QuarkusTest;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.junit.jupiter.api.*;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -26,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @QuarkusTest
+@Tag("integration")
 @TestMethodOrder(MethodOrderer.Alphanumeric.class)
 public class AccountResourceTest {
 
@@ -202,7 +205,12 @@ public class AccountResourceTest {
 
     @Test
     @Order(8)
-    public void list_whenListingAccountsAndDataIsPresent_200AndCorrectResponse() {
+    public void list_whenListingAccountsAndDataIsPresent_200AndCorrectResponse() throws SQLException {
+        ScalarHandler<Long> handler = new ScalarHandler<>();
+        Long dbValues = queryRunnerService
+            .getRunner()
+            .query("SELECT COUNT(*) FROM bank_account", handler);
+
         List<BankAccount> accounts = new ArrayList<>();
         accounts = given()
             .header("Content-Type", MediaType.APPLICATION_JSON)
@@ -215,7 +223,7 @@ public class AccountResourceTest {
             .body()
             .as(accounts.getClass());
         assertFalse(accounts.isEmpty());
-        assertEquals(2, accounts.size());
+        assertEquals(dbValues, accounts.size());
     }
 
     private AccountTransferRequest createRequest(String fromId, String toId, Long amount) {

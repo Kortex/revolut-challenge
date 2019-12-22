@@ -35,6 +35,7 @@ Running the project also involves using the Maven wrapper and can be done with t
 `./mvnw quarkus:dev`
 
 - This will effectively start the project's web server binding to `http://localhost:8080`
+- Note that the first time the application runs `Flyway` will perform a schema creation and will seed data.
 
 Testing the project can be done by using the following command:
 
