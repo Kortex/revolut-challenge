@@ -4,8 +4,6 @@ import lombok.Getter;
 
 import javax.ws.rs.core.Response;
 
-import java.text.MessageFormat;
-
 public abstract class AbstractApplicationException extends RuntimeException {
 
     @Getter
@@ -13,11 +11,6 @@ public abstract class AbstractApplicationException extends RuntimeException {
 
     public AbstractApplicationException(String message, ApplicationError error) {
         super(message);
-        this.errorCode = error.getCode();
-    }
-
-    public AbstractApplicationException(String message, ApplicationError error, Object... args) {
-        super(MessageFormat.format(message, args));
         this.errorCode = error.getCode();
     }
 
