@@ -5,7 +5,6 @@ import com.ariskourt.revolut.exceptions.BankAccountNotFoundException;
 import com.ariskourt.revolut.exceptions.InsufficientBalanceException;
 import com.ariskourt.revolut.exceptions.SameAccountTransferException;
 import com.ariskourt.revolut.exceptions.mappers.ApiExceptionMapper;
-import com.ariskourt.revolut.utils.Pair;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -17,19 +16,17 @@ public class TransferValidationServiceImpl implements TransferValidationService 
     private static final Long INSUFFICIENT_BALANCE = 0L;
 
     /***
-     * Method that perform all the validation steps for a given {@link Pair} of {@link BankAccount} object,
+     * Method that perform all the validation steps for a given a pair of {@link BankAccount} objects,
      * as well as the given transfer amount. Throws various validation related exceptions that are handled by
      * the {@link ApiExceptionMapper} and translated into the
      * appropriate responses.
      *
-     * @param accountPair - The pair of account object to undergo validation
-     * @param transferAmount - The amount of funds requested for transfer
+     * @param from - The account to transfer funds from
+     * @param to - The account to transfer funds to
+     * @param transferAmount - The amount to transfer between accounts
      */
     @Override
-    public void validateTransferDetails(Pair<BankAccount, BankAccount> accountPair, Long transferAmount) {
-
-        var from = accountPair.getLeft();
-        var to = accountPair.getRight();
+    public void validateTransferDetails(BankAccount from, BankAccount to, Long transferAmount) {
 
 	if (from == null && to == null) {
 	    log.error("No bank account have been found for the given ids");
@@ -56,7 +53,7 @@ public class TransferValidationServiceImpl implements TransferValidationService 
 	    throw new InsufficientBalanceException("From account has an insufficient balance. Cannot transfer from it");
 	}
 
-	if (from.getAccountBalance() < transferAmount) {
+	if (from.getAccountBalance() < Math.abs(transferAmount)) {
 	    log.error("From account's current balance is less that the requested transfer amount.");
 	    throw new InsufficientBalanceException("From account's balance is lower that the requested transfer amount");
 	}

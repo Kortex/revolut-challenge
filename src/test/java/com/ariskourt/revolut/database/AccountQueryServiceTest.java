@@ -1,5 +1,8 @@
-package com.ariskourt.revolut.services;
+package com.ariskourt.revolut.database;
 
+import com.ariskourt.revolut.database.AccountQueryService;
+import com.ariskourt.revolut.database.AccountQueryServiceImpl;
+import com.ariskourt.revolut.database.QueryRunnerService;
 import com.ariskourt.revolut.domain.BankAccount;
 import com.ariskourt.revolut.exceptions.DataAccessException;
 import org.apache.commons.dbutils.QueryRunner;

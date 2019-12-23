@@ -1,4 +1,4 @@
-package com.ariskourt.revolut.services;
+package com.ariskourt.revolut.database;
 
 import org.apache.commons.dbutils.QueryRunner;
 

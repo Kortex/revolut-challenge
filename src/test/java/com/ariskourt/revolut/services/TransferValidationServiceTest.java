@@ -4,7 +4,6 @@ import com.ariskourt.revolut.domain.BankAccount;
 import com.ariskourt.revolut.exceptions.BankAccountNotFoundException;
 import com.ariskourt.revolut.exceptions.InsufficientBalanceException;
 import com.ariskourt.revolut.exceptions.SameAccountTransferException;
-import com.ariskourt.revolut.utils.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +11,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Date;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class TransferValidationServiceTest {
 
@@ -26,22 +26,21 @@ class TransferValidationServiceTest {
     @Test
     @DisplayName("When no from and to account are found validation fails")
     public void validateTransferDetails_WhenBothAccountsNotPresent_ExceptionIsThrown() {
-        Pair<BankAccount, BankAccount> nullPair = Pair.of(null, null);
-        assertThrows(BankAccountNotFoundException.class, () -> validationService.validateTransferDetails(nullPair, 1000L));
+        assertThrows(BankAccountNotFoundException.class, () -> validationService.validateTransferDetails(null, null, 1000L));
     }
 
     @Test
     @DisplayName("When no from account is found validation fails")
     public void validateTransferDetails_WhenFromAccountNotPresent_ExceptionIsThrown() {
-        Pair<BankAccount, BankAccount> nullFromPair = Pair.of(null, createAccount(1000L));
-        assertThrows(BankAccountNotFoundException.class, () -> validationService.validateTransferDetails(nullFromPair, 1000L));
+        var from = createAccount(1000L);
+        assertThrows(BankAccountNotFoundException.class, () -> validationService.validateTransferDetails(from, null, 1000L));
     }
 
     @Test
     @DisplayName("When no to account is found validation fails")
     public void validateTransferDetails_WhenToAccountNotPresent_ExceptionIsThrown() {
-        Pair<BankAccount, BankAccount> nullToPair = Pair.of(createAccount(1000L), null);
-        assertThrows(BankAccountNotFoundException.class, () -> validationService.validateTransferDetails(nullToPair, 1000L));
+        var from = createAccount(1000L);
+        assertThrows(BankAccountNotFoundException.class, () -> validationService.validateTransferDetails(from, null, 1000L));
     }
 
     @Test
@@ -51,8 +50,7 @@ class TransferValidationServiceTest {
         var id = UUID.randomUUID().toString();
         var from = createAccount(id, 1000L, createdAt);
         var to = createAccount(id, 1000L, createdAt);
-        Pair<BankAccount, BankAccount> samePair = Pair.of(from, to);
-        assertThrows(SameAccountTransferException.class, () -> validationService.validateTransferDetails(samePair, 1000L));
+        assertThrows(SameAccountTransferException.class, () -> validationService.validateTransferDetails(from, to, 1000L));
     }
 
     @Test
@@ -60,8 +58,7 @@ class TransferValidationServiceTest {
     public void validateTransferDetails_WhenFromAccountHasNoBalanceLeft_ExceptionIsThrown() {
         var from = createAccount(0L);
         var to = createAccount(1000L);
-        Pair<BankAccount, BankAccount> noBalancePair = Pair.of(from, to);
-        assertThrows(InsufficientBalanceException.class, () -> validationService.validateTransferDetails(noBalancePair, 1000L));
+        assertThrows(InsufficientBalanceException.class, () -> validationService.validateTransferDetails(from, to, 1000L));
     }
 
     @Test
@@ -69,8 +66,7 @@ class TransferValidationServiceTest {
     public void validateTransferDetails_WhenAccountHasNegativeBalance_ExceptionIsThrown() {
         var from = createAccount(-100L);
         var to = createAccount(1000L);
-        Pair<BankAccount, BankAccount> noBalancePair = Pair.of(from, to);
-        assertThrows(InsufficientBalanceException.class, () -> validationService.validateTransferDetails(noBalancePair, 1000L));
+        assertThrows(InsufficientBalanceException.class, () -> validationService.validateTransferDetails(from, to, 1000L));
     }
 
     @Test
@@ -78,8 +74,15 @@ class TransferValidationServiceTest {
     public void validateTransferDetails_WhenFromAccountHasInsufficientBalance_ExceptionIsThrown() {
         var from = createAccount(500L);
         var to = createAccount(1000L);
-        Pair<BankAccount, BankAccount> lowBalancePair = Pair.of(from, to);
-        assertThrows(InsufficientBalanceException.class, () -> validationService.validateTransferDetails(lowBalancePair, 2000L));
+        assertThrows(InsufficientBalanceException.class, () -> validationService.validateTransferDetails(from, to, 2000L));
+    }
+
+    @Test
+    @DisplayName("When from account has insufficient balance and transfer amount is negative, validation fails")
+    public void validateTransferDetails_WhenFromAccountHasInsufficientBalanceNegativeTransferAmount_ExceptionIsThrown() {
+        var from = createAccount(500L);
+        var to = createAccount(1000L);
+        assertThrows(InsufficientBalanceException.class, () -> validationService.validateTransferDetails(from, to, -2000L));
     }
 
     @Test
@@ -87,9 +90,8 @@ class TransferValidationServiceTest {
     public void validateTransferDetails_WhenBothAccountsAreEligibleForTransfer_NoExceptionIsThrown() {
         var from = createAccount(5000L);
         var to = createAccount(1000L);
-        Pair<BankAccount, BankAccount> correctAccountPair = Pair.of(from, to);
         try {
-            validationService.validateTransferDetails(correctAccountPair, 1000L);
+            validationService.validateTransferDetails(from, to, 1000L);
         } catch (Exception e) {
             fail();
         }

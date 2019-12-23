@@ -1,10 +1,8 @@
 package com.ariskourt.revolut.domain;
 
 import lombok.*;
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Getter

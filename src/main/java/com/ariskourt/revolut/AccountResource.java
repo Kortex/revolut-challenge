@@ -1,7 +1,7 @@
 package com.ariskourt.revolut;
 
 import com.ariskourt.revolut.api.AccountTransferRequest;
-import com.ariskourt.revolut.services.AccountQueryService;
+import com.ariskourt.revolut.database.AccountQueryService;
 import com.ariskourt.revolut.services.AccountTransferService;
 import lombok.RequiredArgsConstructor;
 

@@ -2,8 +2,9 @@ package com.ariskourt.revolut.services;
 
 import com.ariskourt.revolut.api.AccountTransferRequest;
 import com.ariskourt.revolut.api.AccountTransferResponse;
+import com.ariskourt.revolut.database.AccountQueryService;
+import com.ariskourt.revolut.database.AccountUpdateService;
 import com.ariskourt.revolut.utils.OperationTimer;
-import com.ariskourt.revolut.utils.Pair;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,10 +41,11 @@ public class AccountTransferServiceImpl implements AccountTransferService {
             var transferAmount = request.getAmount();
 
             log.info("Validating fetched accounts and transfer details...");
-            validationService.validateTransferDetails(Pair.of(fromAccount, toAccount), transferAmount);
+            validationService.validateTransferDetails(fromAccount, toAccount, transferAmount);
 
-            fromAccount.subFromBalance(transferAmount);
-            toAccount.addToBalance(transferAmount);
+            TransferStrategyFactory
+                .getStrategy(transferAmount)
+                .accept(fromAccount, toAccount);
 
             updateService.updateAccount(fromAccount);
             updateService.updateAccount(toAccount);

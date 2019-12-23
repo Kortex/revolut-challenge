@@ -1,4 +1,4 @@
-package com.ariskourt.revolut.services;
+package com.ariskourt.revolut.database;
 
 import io.agroal.api.AgroalDataSource;
 import lombok.RequiredArgsConstructor;
@@ -6,8 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbutils.QueryRunner;
 
 import javax.enterprise.context.ApplicationScoped;
-
-import java.util.function.Supplier;
 
 @Slf4j
 @ApplicationScoped

@@ -1,5 +1,7 @@
 package com.ariskourt.revolut.services;
 
+import com.ariskourt.revolut.database.QueryRunnerService;
+import com.ariskourt.revolut.database.QueryRunnerServiceImpl;
 import io.agroal.api.AgroalDataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.junit.jupiter.api.BeforeEach;

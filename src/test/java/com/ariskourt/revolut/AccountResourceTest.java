@@ -5,7 +5,7 @@ import com.ariskourt.revolut.api.AccountTransferResponse;
 import com.ariskourt.revolut.api.ErrorResponse;
 import com.ariskourt.revolut.domain.BankAccount;
 import com.ariskourt.revolut.exceptions.common.ApplicationError;
-import com.ariskourt.revolut.services.QueryRunnerService;
+import com.ariskourt.revolut.database.QueryRunnerService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.test.junit.QuarkusTest;
@@ -224,6 +224,28 @@ public class AccountResourceTest {
             .as(accounts.getClass());
         assertFalse(accounts.isEmpty());
         assertEquals(dbValues, accounts.size());
+    }
+
+    @Test
+    @Order(9)
+    public void transfer_WhenRequestDetailsAreOkAndAmountNegative_200isReturnedAlongWithResponse() throws JsonProcessingException {
+        var request = createRequest(FROM_ID, TO_ID, -1000L);
+        var response = given()
+            .body(mapper.writeValueAsString(request))
+            .header("Content-Type", MediaType.APPLICATION_JSON)
+            .when()
+            .post("/accounts/transfer")
+            .then()
+            .log().all()
+            .assertThat()
+            .statusCode(200)
+            .extract()
+            .as(AccountTransferResponse.class);
+        assertNotNull(response);
+        assertEquals(request.getFromAccount(), response.getFromAccount());
+        assertEquals(request.getToAccount(), response.getToAccount());
+        assertEquals(request.getAmount(), response.getAmount());
+        assertThat(response.getMessage(), containsString("successful"));
     }
 
     private AccountTransferRequest createRequest(String fromId, String toId, Long amount) {

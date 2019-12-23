@@ -2,8 +2,9 @@ package com.ariskourt.revolut.services;
 
 import com.ariskourt.revolut.api.AccountTransferRequest;
 import com.ariskourt.revolut.api.AccountTransferResponse;
+import com.ariskourt.revolut.database.AccountQueryService;
+import com.ariskourt.revolut.database.AccountUpdateService;
 import com.ariskourt.revolut.domain.BankAccount;
-import com.ariskourt.revolut.utils.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +17,8 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AccountTransferServiceTest {
@@ -46,7 +48,7 @@ class AccountTransferServiceTest {
     public void transferAmount_WhenCalled_ResponseIsReturned() {
         when(queryService.getAccountBy(eq(FROM_ID))).thenReturn(from);
         when(queryService.getAccountBy(eq(TO_ID))).thenReturn(to);
-        doNothing().when(validationService).validateTransferDetails(any(Pair.class), anyLong());
+        doNothing().when(validationService).validateTransferDetails(any(BankAccount.class), any(BankAccount.class), anyLong());
         doNothing().when(updateService).updateAccount(any(BankAccount.class));
         AccountTransferResponse response = transferService.transferAmount(request);
         assertNotNull(response);
