@@ -37,9 +37,15 @@ Running the project also involves using the Maven wrapper and can be done with t
 - This will effectively start the project's web server binding to `http://localhost:8080`
 - Note that the first time the application runs `Flyway` will perform a schema creation and will seed data.
 
-Testing the project can be done by using the following command:
+Running the project's unit tests can be done by using the following command:
 
-`./mvnw test`
+`./mvnw clean compile test`
+
+Running the project's unit and integration tests can be done by using the following command:
+
+`./mvnw clean compile verify`
+
+* Note that for the integration tests to run, a running Postgres database is needed.
 
 ### Creating Dockerized versions of the application.
 
@@ -74,7 +80,7 @@ the `docker-compose` file found under `/src/main/docker`. The steps to do so are
 * From the project's root directory run:
 
 ```shell script
-./mvnw clean compile test verify package  
+./mvnw clean compile verify package  
 ```
 
 * The build the image using:
