@@ -15,8 +15,6 @@ import java.math.BigDecimal;
 @ApplicationScoped
 public class TransferValidationServiceImpl implements TransferValidationService {
 
-    private static final Double INSUFFICIENT_BALANCE = 0.0;
-
     /***
      * Method that perform all the validation steps for a given a pair of {@link BankAccount} objects,
      * as well as the given transfer amount. Throws various validation related exceptions that are handled by
