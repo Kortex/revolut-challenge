@@ -1,0 +1,20 @@
+version: '2'
+services:
+  application:
+    image: quarkus/revolut-challenge-jvm
+    network_mode: host
+    container_name: quarkus-web-app
+    ports:
+    - "8080:8080"
+    depends_on:
+      - database
+  database:
+    image: postgres:12.1
+    network_mode: host
+    container_name: postegresdb
+    ports:
+    - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=revolut
+      - POSTGRES_USER=revolut
+      - POSTGRES_DB=revolutdb

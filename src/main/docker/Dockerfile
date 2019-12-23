@@ -3,11 +3,11 @@
 #
 # Before building the docker image run:
 #
-# mvn package
+# mvn clean compile test verify
 #
 # Then, build the image with:
 #
-# docker build -f src/main/docker/Dockerfile.jvm -t quarkus/revolut-challenge-jvm .
+# docker build -f src/main/docker/Dockerfile -t quarkus/revolut-challenge-jvm .
 #
 # Then run the container using:
 #

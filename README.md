@@ -68,13 +68,38 @@ To create a JVM based docker image the following steps need to be followed:
 
 ### Using the application
 
-To use the application just start the server and issue a cURL request similar to the following:
+To use the application just start the server. To do so an issue and convenient way is to build the docker image and use 
+the `docker-compose` file found under `/src/main/docker`. The steps to do so are:
+
+* From the project's root directory run:
+
+```shell script
+./mvnw clean compile test verify package  
+```
+
+* The build the image using:
+
+```shell script
+docker build -f src/main/docker/Dockerfile -t quarkus/revolut-challenge-jvm .
+```
+
+* Finally, perform the following to start the containers in daemon mode:
+
+```shell script
+cd src/main/docker
+docker-compose up -d
+```
+
+You can then perform calls using cURL with a command similar to: 
 
 ```shell script
 curl -X POST "http://localhost:8080/accounts/transfer" \
 -H  "accept: */*" -H  "Content-Type: application/json" \
 -d "{\"fromAccount\":\"42a238e1-a020-4ef2-a6dd-ab590f35ef12\",\"toAccount\":\"7c74d1d9-99f7-48b5-85b6-1397902dde17\",\"amount\":4000}"
 ```
+
 To get a full overview of the API offered by the application you can visit the following link:
 
-```http://localhost:8080/accounts-api```
+`http://localhost:8080/accounts-api`
+
+Note that the above is only available when the application runs with the `dev` profile
