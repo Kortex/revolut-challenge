@@ -1,8 +1,5 @@
 package com.ariskourt.revolut.database;
 
-import com.ariskourt.revolut.database.AccountUpdateService;
-import com.ariskourt.revolut.database.AccountUpdateServiceImpl;
-import com.ariskourt.revolut.database.QueryRunnerService;
 import com.ariskourt.revolut.domain.BankAccount;
 import com.ariskourt.revolut.exceptions.DataAccessException;
 import org.apache.commons.dbutils.QueryRunner;
@@ -18,7 +15,7 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
