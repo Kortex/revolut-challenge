@@ -5,8 +5,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -21,6 +22,6 @@ public class AccountTransferRequest {
     private String toAccount;
 
     @NotNull(message = "A transfer amount must be provided")
-    private Long amount;
+    private BigDecimal amount;
 
 }

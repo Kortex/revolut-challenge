@@ -4,6 +4,8 @@ import com.ariskourt.revolut.domain.BankAccount;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigDecimal;
+
 /***
  * Simple strategy implementation for transferring funds if the amount transferred is negative
  */
@@ -11,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 class NegativeAmountStrategy implements AmountTransferStrategy {
 
-    private final Long amount;
+    private final BigDecimal amount;
 
     @Override
     public void accept(BankAccount from, BankAccount to) {

@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.UUID;
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class AccountUpdateServiceTest {
 
-    private static final Long BALANCE = 1000L;
+    private static final BigDecimal BALANCE = new BigDecimal("1000.0");
     private static final String ID = UUID.randomUUID().toString();
 
     @Mock private QueryRunnerService queryRunnerService;

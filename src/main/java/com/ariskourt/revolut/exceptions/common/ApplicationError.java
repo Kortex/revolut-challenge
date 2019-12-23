@@ -12,6 +12,7 @@ public enum ApplicationError {
     INSUFFICIENT_ACCOUNT_BALANCE (3),
     DATA_ACCESS_ERROR(-1),
     INVALID_PAYLOAD_ERROR(-2),
+    BAD_CURRENCY_API_CALL(-3),
     INTERNAL_SERVER_ERROR(-100);
 
     private final Integer code;

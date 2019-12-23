@@ -9,11 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import java.math.BigDecimal;
+
 @Slf4j
 @ApplicationScoped
 public class TransferValidationServiceImpl implements TransferValidationService {
 
-    private static final Long INSUFFICIENT_BALANCE = 0L;
+    private static final Double INSUFFICIENT_BALANCE = 0.0;
 
     /***
      * Method that perform all the validation steps for a given a pair of {@link BankAccount} objects,
@@ -26,7 +28,7 @@ public class TransferValidationServiceImpl implements TransferValidationService 
      * @param transferAmount - The amount to transfer between accounts
      */
     @Override
-    public void validateTransferDetails(BankAccount from, BankAccount to, Long transferAmount) {
+    public void validateTransferDetails(BankAccount from, BankAccount to, BigDecimal transferAmount) {
 
 	if (from == null && to == null) {
 	    log.error("No bank account have been found for the given ids");
@@ -48,12 +50,12 @@ public class TransferValidationServiceImpl implements TransferValidationService 
 	    throw new SameAccountTransferException("From and to account are the same. Cannot transfer between them.");
 	}
 
-	if (from.getAccountBalance() <= INSUFFICIENT_BALANCE) {
+	if (from.getAccountBalance().compareTo(BigDecimal.ZERO) <= 0) {
 	    log.error("From account has an insufficient balance. Cannot transfer funds");
 	    throw new InsufficientBalanceException("From account has an insufficient balance. Cannot transfer from it");
 	}
 
-	if (from.getAccountBalance() < Math.abs(transferAmount)) {
+	if (from.getAccountBalance().compareTo(transferAmount.abs()) < 0) {
 	    log.error("From account's current balance is less that the requested transfer amount.");
 	    throw new InsufficientBalanceException("From account's balance is lower that the requested transfer amount");
 	}

@@ -36,15 +36,15 @@ public class AccountTransferServiceImpl implements AccountTransferService {
         try {
             log.info("Got incoming transfer request with the following details {}", request);
 
+            var amount = request.getAmount();
             var fromAccount = queryService.getAccountBy(request.getFromAccount());
             var toAccount = queryService.getAccountBy(request.getToAccount());
-            var transferAmount = request.getAmount();
 
             log.info("Validating fetched accounts and transfer details...");
-            validationService.validateTransferDetails(fromAccount, toAccount, transferAmount);
+            validationService.validateTransferDetails(fromAccount, toAccount, amount);
 
             TransferStrategyFactory
-                .getStrategy(transferAmount)
+                .getStrategy(amount)
                 .accept(fromAccount, toAccount);
 
             updateService.updateAccount(fromAccount);
@@ -56,8 +56,8 @@ public class AccountTransferServiceImpl implements AccountTransferService {
                 .fromBalance(fromAccount.getAccountBalance())
                 .toAccount(toAccount.getId())
                 .toBalance(toAccount.getAccountBalance())
-                .amount(transferAmount)
-                .message("Transfer of " + transferAmount + " from " + fromAccount.getId() + " to " + toAccount.getId() + " successful")
+                .amount(amount)
+                .message("Transfer of " + amount + " from " + fromAccount.getId() + " to " + toAccount.getId() + " successful")
                 .build();
         } finally {
             LOCK.unlock();

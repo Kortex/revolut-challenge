@@ -4,6 +4,8 @@ import com.ariskourt.revolut.domain.BankAccount;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigDecimal;
+
 /***
  * Simple implementation of transfer strategies that transfer funds between two accounts if the amount is positive
  */
@@ -11,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 class PositiveAmountStrategy implements AmountTransferStrategy {
 
-    private final Long amount;
+    private final BigDecimal amount;
 
     /***
      * Accepts two account objects and transfer the amount between them

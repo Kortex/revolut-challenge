@@ -2,6 +2,8 @@ package com.ariskourt.revolut.api;
 
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Builder
@@ -10,10 +12,10 @@ import lombok.*;
 public class AccountTransferResponse {
 
     private String fromAccount;
-    private Long fromBalance;
+    private BigDecimal fromBalance;
     private String toAccount;
-    private Long toBalance;
-    private Long amount;
+    private BigDecimal toBalance;
+    private BigDecimal amount;
     private String message;
 
 }

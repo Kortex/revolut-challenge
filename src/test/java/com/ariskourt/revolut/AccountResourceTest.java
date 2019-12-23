@@ -16,6 +16,7 @@ import org.junit.jupiter.api.*;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,7 @@ public class AccountResourceTest {
     @Test
     @Order(1)
     public void transfer_WhenRequestDetailsAreOk_200isReturnedAlongWithResponse() throws JsonProcessingException {
-        var request = createRequest(FROM_ID, TO_ID, 1000L);
+        var request = createRequest(FROM_ID, TO_ID, 1000.0);
         var response = given()
             .body(mapper.writeValueAsString(request))
             .header("Content-Type", MediaType.APPLICATION_JSON)
@@ -70,7 +71,7 @@ public class AccountResourceTest {
     @Test
     @Order(2)
     public void transfer_WhenRequestContainsNoMatchingAccounts_404isReturnedAlongWithErrorResponse() throws JsonProcessingException {
-        var request = createRequest(UUID.randomUUID().toString(), UUID.randomUUID().toString(), 1000L);
+        var request = createRequest(UUID.randomUUID().toString(), UUID.randomUUID().toString(), 1000.0);
         var response = given()
             .body(mapper.writeValueAsString(request))
             .header("Content-Type", MediaType.APPLICATION_JSON)
@@ -91,7 +92,7 @@ public class AccountResourceTest {
     @Test
     @Order(3)
     public void transfer_WhenRequestContainsNoMatchingFromAccount_404isReturnedAlongWithErrorResponse() throws JsonProcessingException {
-        var request = createRequest(UUID.randomUUID().toString(), TO_ID, 1000L);
+        var request = createRequest(UUID.randomUUID().toString(), TO_ID, 1000.0);
         var response = given()
             .body(mapper.writeValueAsString(request))
             .header("Content-Type", MediaType.APPLICATION_JSON)
@@ -112,7 +113,7 @@ public class AccountResourceTest {
     @Test
     @Order(4)
     public void transfer_WhenRequestContainsNoMatchingToAccount_404isReturnedAlongWithErrorResponse() throws JsonProcessingException {
-        var request = createRequest(FROM_ID, UUID.randomUUID().toString(), 1000L);
+        var request = createRequest(FROM_ID, UUID.randomUUID().toString(), 1000.0);
         var response = given()
             .body(mapper.writeValueAsString(request))
             .header("Content-Type", MediaType.APPLICATION_JSON)
@@ -133,7 +134,7 @@ public class AccountResourceTest {
     @Test
     @Order(5)
     public void transfer_WhenRequestContainsTheSameAccount_400isReturnedAlongWithErrorResponse() throws JsonProcessingException {
-        var request = createRequest(FROM_ID, FROM_ID, 1000L);
+        var request = createRequest(FROM_ID, FROM_ID, 1000.0);
         var response = given()
             .body(mapper.writeValueAsString(request))
             .header("Content-Type", MediaType.APPLICATION_JSON)
@@ -154,7 +155,7 @@ public class AccountResourceTest {
     @Test
     @Order(6)
     public void transfer_WhenRequestAmountIsOverFromAccountBalance_400isReturnedAlongWithErrorResponse() throws JsonProcessingException {
-        var request = createRequest(FROM_ID, TO_ID, 100000L);
+        var request = createRequest(FROM_ID, TO_ID, 100000.0);
         var response = given()
             .body(mapper.writeValueAsString(request))
             .header("Content-Type", MediaType.APPLICATION_JSON)
@@ -180,7 +181,7 @@ public class AccountResourceTest {
             .getRunner()
             .update("UPDATE bank_account SET account_balance = ? WHERE id = ?", 0, FROM_ID);
 
-        var request = createRequest(FROM_ID, TO_ID, 1000L);
+        var request = createRequest(FROM_ID, TO_ID, 1000.0);
         var response = given()
             .body(mapper.writeValueAsString(request))
             .header("Content-Type", MediaType.APPLICATION_JSON)
@@ -229,7 +230,7 @@ public class AccountResourceTest {
     @Test
     @Order(9)
     public void transfer_WhenRequestDetailsAreOkAndAmountNegative_200isReturnedAlongWithResponse() throws JsonProcessingException {
-        var request = createRequest(FROM_ID, TO_ID, -1000L);
+        var request = createRequest(FROM_ID, TO_ID, -1000.0);
         var response = given()
             .body(mapper.writeValueAsString(request))
             .header("Content-Type", MediaType.APPLICATION_JSON)
@@ -248,11 +249,11 @@ public class AccountResourceTest {
         assertThat(response.getMessage(), containsString("successful"));
     }
 
-    private AccountTransferRequest createRequest(String fromId, String toId, Long amount) {
+    private AccountTransferRequest createRequest(String fromId, String toId, Double amount) {
         var request = new AccountTransferRequest();
         request.setFromAccount(fromId);
         request.setToAccount(toId);
-        request.setAmount(amount);
+        request.setAmount(BigDecimal.valueOf(amount));
         return request;
     }
 

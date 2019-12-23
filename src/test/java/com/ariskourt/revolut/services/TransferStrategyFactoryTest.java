@@ -3,14 +3,16 @@ package com.ariskourt.revolut.services;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class TransferStrategyFactoryTest {
 
-    private static final Long POSITIVE_AMOUNT = 1000L;
-    private static final Long NEGATIVE_AMOUNT = -1000L;
+    private static final BigDecimal POSITIVE_AMOUNT = BigDecimal.valueOf(1000.0);
+    private static final BigDecimal NEGATIVE_AMOUNT = BigDecimal.valueOf(-1000.0);
 
     private AmountTransferStrategy strategy;
 

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
@@ -25,7 +26,7 @@ class AccountTransferServiceTest {
 
     private static final String FROM_ID = UUID.randomUUID().toString();
     private static final String TO_ID = UUID.randomUUID().toString();
-    private static final Long AMOUNT = 1000L;
+    private static final BigDecimal AMOUNT = BigDecimal.valueOf(1000.0);
 
     @Mock private AccountQueryService queryService;
     @Mock private TransferValidationService validationService;
@@ -39,8 +40,8 @@ class AccountTransferServiceTest {
     @BeforeEach
     void setUp() {
         transferService = new AccountTransferServiceImpl(queryService, validationService, updateService);
-        from = createAccount(FROM_ID, 5000L);
-        to = createAccount(TO_ID, 2000L);
+        from = createAccount(FROM_ID, "5000.00");
+        to = createAccount(TO_ID, "2000.0");
         request = createRequest();
     }
 
@@ -48,7 +49,7 @@ class AccountTransferServiceTest {
     public void transferAmount_WhenCalled_ResponseIsReturned() {
         when(queryService.getAccountBy(eq(FROM_ID))).thenReturn(from);
         when(queryService.getAccountBy(eq(TO_ID))).thenReturn(to);
-        doNothing().when(validationService).validateTransferDetails(any(BankAccount.class), any(BankAccount.class), anyLong());
+        doNothing().when(validationService).validateTransferDetails(any(BankAccount.class), any(BankAccount.class), any(BigDecimal.class));
         doNothing().when(updateService).updateAccount(any(BankAccount.class));
         AccountTransferResponse response = transferService.transferAmount(request);
         assertNotNull(response);
@@ -68,11 +69,11 @@ class AccountTransferServiceTest {
         return request;
     }
 
-    private BankAccount createAccount(String id, Long balance) {
+    private BankAccount createAccount(String id, String amount) {
         var account = new BankAccount();
         account.setId(id);
         account.setAccountHolder("John Doe");
-        account.setAccountBalance(balance);
+        account.setAccountBalance(new BigDecimal(amount));
         account.setCreatedAt(new Date());
         account.setVersion(1);
         return account;

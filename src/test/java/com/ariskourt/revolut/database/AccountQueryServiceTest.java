@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -111,7 +112,7 @@ class AccountQueryServiceTest {
         var account = new BankAccount();
         account.setId(id);
         account.setAccountHolder("John Doe");
-        account.setAccountBalance(1000L);
+        account.setAccountBalance(new BigDecimal("1000.0"));
         account.setCreatedAt(new Date());
         account.setVersion(1);
         return account;
